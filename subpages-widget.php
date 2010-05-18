@@ -1,14 +1,14 @@
 <?php 
 /*
-Plugin Name: Shailan Subpages Widget
+Plugin Name: Subpages Extended
 Plugin URI: http://shailan.com/wordpress/plugins/subpages-widget
 Description: A multi widget to list subpages of a page. It also comes with a [subpages] shortcode. You can read <a href="http://shailan.com/wordpress/plugins/subpages-widget#usage">how to use subpages</a> . You can find more widgets, plugins and themes at <a href="http://shailan.com">shailan.com</a>.
-Version: 0.2
+Version: 1.0.1
 Author: Matt Say
 Author URI: http://shailan.com
 */
 
-define('SHAILAN_SP_VERSION','0.2');
+define('SHAILAN_SP_VERSION','1.0.1');
 define('SHAILAN_SP_TITLE', 'Subpages List');
 
 /**
@@ -18,7 +18,7 @@ class shailan_SubpagesWidget extends WP_Widget {
     /** constructor */
     function shailan_SubpagesWidget() {
 		$widget_ops = array('classname' => 'shailan_SubpagesWidget', 'description' => __( 'Subpages list' ) );
-		$this->WP_Widget('shailan-subpages-widget', __('Subpages'), $widget_ops);
+		$this->WP_Widget('shailan-subpages-widget', __('Subpages Extended'), $widget_ops);
 		$this->alt_option_name = 'widget_shailan_subpages';
 		
 		if ( is_active_widget(false, false, $this->id_base) )
@@ -129,6 +129,3 @@ function shailan_subpages_shortcode($atts) {
 	return $subpages;
 }
 add_shortcode('subpages', 'shailan_subpages_shortcode');
-
-
-

@@ -4,7 +4,7 @@ Donate link: http://shailan.com/donate
 Tags: subpages, widget, shortcode, navigation, menu, auto
 Requires at least: 2.5
 Tested up to: 2.9.2
-Stable tag: 1.0
+Stable tag: 1.0.1
 
 A multi widget to list subpages of a page. It also comes with a [[subpages]] shortcode. You can find more widgets, plugins and themes at shailan.com (http://shailan.com).
 
@@ -45,6 +45,9 @@ You can ask your questions [here](http://shailan.com/contact)
 1. A snapshot of the widget form.
 
 == Changelog ==
+
+= 1.0.1 =
+* Fixed version.
 
 = 1.0 =
 * First release.
