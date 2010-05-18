@@ -6,7 +6,7 @@ Requires at least: 2.5
 Tested up to: 2.9.2
 Stable tag: 1.0.1
 
-A multi widget to list subpages of a page. It also comes with a `[subpages]` shortcode. You can find more widgets, plugins and themes at shailan.com (http://shailan.com).
+A multi widget to list subpages of a page. It also comes with a `[subpages]` shortcode. You can find more widgets, plugins and themes at [shailan.com] (http://shailan.com).
 
 == Description ==
 
@@ -21,7 +21,7 @@ Outputs:
 * Themes
 
 If the page doesn’t have any subpages it will display the following error for you to fix it:
-`[[subpages depth="1" childof="257"]]`
+`[subpages depth="1" childof="257"]`
 
 Outputs: 
 
