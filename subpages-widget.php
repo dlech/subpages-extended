@@ -2,13 +2,13 @@
 /*
 Plugin Name: Subpages Extended
 Plugin URI: http://shailan.com/wordpress/plugins/subpages-widget
-Description: A multi widget to list subpages of a page. It also comes with a [subpages] shortcode. You can read <a href="http://shailan.com/wordpress/plugins/subpages-widget#usage">how to use subpages</a> . You can find more widgets, plugins and themes at <a href="http://shailan.com">shailan.com</a>.
-Version: 1.0.1
+Description: A widget to list subpages of a page with an option to show subpages list on <strong>empty pages</strong>. It also comes with a <code>[subpages]</code> shortcode. You can read <a href="http://shailan.com/wordpress/plugins/subpages-widget#usage">how to use subpages</a> . You can find more widgets, plugins and themes at <a href="http://shailan.com">shailan.com</a>.
+Version: 1.0.2
 Author: Matt Say
 Author URI: http://shailan.com
 */
 
-define('SHAILAN_SP_VERSION','1.0.1');
+define('SHAILAN_SP_VERSION','1.0.2');
 define('SHAILAN_SP_TITLE', 'Subpages List');
 
 /**
