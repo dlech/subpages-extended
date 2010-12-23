@@ -104,20 +104,21 @@ function subpages_widget_adminMenu(){
 
 	if(is_admin()){ 
 		wp_enqueue_script( 'jquery' );
-		//wp_enqueue_script( $handle, $src, $deps, $ver, $in_footer );
 		wp_enqueue_script( 'tweetable', WP_PLUGIN_URL . '/subpages-extended/js/jquery.tweetable.js', 'jquery' );
+		wp_enqueue_style( 'subpages-extended', WP_PLUGIN_URL . '/subpages-extended/css/subpages.css' );
 		wp_enqueue_style( 'tweetable', WP_PLUGIN_URL . '/subpages-extended/css/tweetable.css' );
 	};
 
-
 	if ( @$_GET['page'] == 'subpages-extended' ) {
 		if ( @$_REQUEST['action'] && 'save' == $_REQUEST['action'] ) {
-			//update_option( 'shailan_adsense_id', $_REQUEST['shailan_adsense_id'] );
+			if(isset($_REQUEST['auto_insert'])) {
+				update_option( 'subpages_extended_auto_insert', $_REQUEST['auto_insert'] );
+			} else { update_option( 'subpages_extended_auto_insert', false ); }
 		}
 	}
 
 	if (function_exists('add_options_page')) {
-			$page = add_options_page(__('Subpages Options', 'subpages-extended') , __('Adsense Widget', 'subpages-extended'), 'edit_themes', 'subpages-extended', 'subpages_widget_options_page');
+			$page = add_options_page(__('Subpages Extended Options', 'subpages-extended') , __('Subpages Extended', 'subpages-extended'), 'edit_themes', 'subpages-extended', 'subpages_widget_options_page');
 	}
 }
 // add admin menu
@@ -134,6 +135,25 @@ function subpages_widget_options_page(){
 
 <div class="nav"><small><a href="http://shailan.com/wordpress/plugins/subpages-widget">Plugin page</a> | <a href="http://shailan.com/wordpress/plugins/subpages-widget/help">Usage</a> | <a href="http://shailan.com/wordpress/plugins/subpages-widget/shortcode">Shortcode</a> | <a href="http://shailan.com/donate">Donate</a> | <a href="http://shailan.com/wordpress">Get more widgets..</a></small></div>
 
+<div class="share">
+	<div class="share-label">
+		Like this plugin? 
+	</div>
+
+	<div class="share-button tweet">
+		<a href="http://twitter.com/share" class="twitter-share-button" data-url="http://shailan.com/wordpress/plugins/subpages-widget/" data-text="I am using subpages extended #widget on my #wordpress blog, Check this out!" data-count="horizontal" data-via="shailancom">Tweet</a><script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+	</div>
+
+	<div class="share-button facebook">
+		<script src="http://connect.facebook.net/en_US/all.js#xfbml=1"></script>
+		<fb:like href="http://shailan.com/wordpress/plugins/subpages-widget/" ref="plugin_options" show_faces="false" width="400" font="segoe ui"></fb:like>
+	</div>
+	
+	<div class="clear"></div>
+</div>
+
+
+
 <?php if ( isset($_GET['message']) && isset($messages[$_GET['message']]) ) { ?>
 <div id="message" class="updated"><p><?php echo $messages[$_GET['message']]; ?></p></div>
 <?php } ?>
@@ -145,9 +165,12 @@ function subpages_widget_options_page(){
 
 <table class="form-table"> 
 <tr valign="top"> 
-<th scope="row"><label for="shailan_adsense_id"><?php _e('Adsense ID:'); ?></label></th> 
-<td><input name="shailan_adsense_id" id="shailan_adsense_id" type="text" value="<?php if ( get_option( 'shailan_adsense_id' ) != "") { echo stripslashes(get_option( 'shailan_adsense_id' )); } else { echo ''; } ?>" size="44" />
-<span class="description">Your unique Adsense ID.</span></td> 
+	<th scope="row"><label for="auto_insert"><?php _e('Auto-insert:'); ?></label></th> 
+	<td>
+		<?php if(get_option('subpages_extended_auto_insert')){ $checked = "checked=\"checked\""; }else{ $checked = "";} ?>
+		<input type="checkbox" name="auto_insert" id="auto_insert" value="true" <?php echo $checked; ?> />
+		<span class="description">Auto-insert subpages list on empty pages.</span>
+	</td> 
 </tr> 
 </table>
 
@@ -159,7 +182,7 @@ function subpages_widget_options_page(){
  
 </form>
 
-<table><tr><td width="400" valign="top">
+<table><tr><td width="400" valign="top" class="panel" >
 <div id="shailancom" style="background:#ededed; border-top:10px solid #ff9966; padding:15px;">
 <h3>Latest headlines from Shailan.com</h3>
 		<?php	
@@ -177,7 +200,7 @@ function subpages_widget_options_page(){
 
 			wp_widget_rss_output( $rss_options ); ?>
 </div>
-</td><td width="400" valign="top">
+</td><td width="400" valign="top" class="panel" >
 <div id="twit" style="background:#ededed; border-top:10px solid #68d8fd; padding:15px;">
 <h3>My latest tweets</h3>
 <div id="tweets">
@@ -188,7 +211,7 @@ function subpages_widget_options_page(){
 
 <script type="text/javascript"> 
 jQuery(document).ready(function($) {
-	$('#tweets').tweetable({username: 'mattsay', time: false, limit: 2, replies: false});
+	$('#tweets').tweetable({username: 'shailancom', time: false, limit: 2, replies: false});
 });
 </script> 
 
@@ -201,7 +224,6 @@ jQuery(document).ready(function($) {
 <?php
 }
 
-// [bartag foo="foo-value"]
 function shailan_subpages_shortcode($atts) {
 	global $post;
 
@@ -230,3 +252,32 @@ function shailan_subpages_shortcode($atts) {
 	return $subpages;
 }
 add_shortcode('subpages', 'shailan_subpages_shortcode');
+
+function shailan_subpages_filter($content){
+	global $post;
+	
+	$autoinsert = ! (bool) get_option( 'subpages_extended_auto_insert');
+	
+	if( strlen($content) != 0 || $autoinsert )
+		return $content;
+	
+	$parent = $post->ID;
+	$children = wp_list_pages( 'echo=0&child_of=' . $parent . '&title_li=' ); 
+	$depth = 4;
+	$exclude = '';
+	
+	if ($children) { 
+		ob_start();
+		?>
+		<div class="shailan-subpages-container">
+				<ul class="subpages">
+					<?php wp_list_pages('sort_column=menu_order&depth='.$depth.'&title_li=&child_of='.$post->ID.'&exclude='.$exclude); ?>
+				</ul>
+		</div> 
+		<?php
+		$subpages = ob_get_clean();
+		return $subpages;
+	} else {
+		return $content . '\n\t<!-- SUBPAGES : This page doesn\'t have any subpages. -->';
+	}
+} add_filter('the_content', 'shailan_subpages_filter');
