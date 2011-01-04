@@ -11,6 +11,8 @@ Author URI: http://shailan.com
 define('SHAILAN_SP_VERSION','1.0.2');
 define('SHAILAN_SP_TITLE', 'Subpages List');
 
+global $subpages_indexes;
+
 /**
  * Shailan Subpages Widget Class
  */
@@ -22,24 +24,44 @@ class shailan_SubpagesWidget extends WP_Widget {
 		$this->alt_option_name = 'widget_shailan_subpages';
 		
 		if ( is_active_widget(false, false, $this->id_base) )
-			add_action( 'wp_head', array(&$this, 'styles') );		
+			add_action( 'wp_head', array(&$this, 'styles') );	
+
+		$this->widget_defaults = array(
+			'title' => '',
+			'exclude' => '',
+			'depth' => -1,
+			'use_parent_title' => false,
+			'exceptme' => false,
+			'childof' => '',
+			
+		);
     }
 	
     /** @see WP_Widget::widget */
     function widget($args, $instance) {		
 		global $post;
-	
-        extract( $args );
-        $title = apply_filters('widget_title', $instance['title']);
-		$exclude = $instance['exclude'];
-		$depth = $instance['depth'];
 		
-		if(is_page()){				
+		extract( $args );		
+		$widget_options = wp_parse_args( $instance, $this->widget_defaults );
+		extract( $widget_options, EXTR_SKIP );
+		
+		$use_parent_title = (bool) $use_parent_title;
+		
+		// echo "<pre>".print_r($instance, true)."</pre>";
+		
+		if( '-1' == $childof ) {  
+			$childof = $post->ID;
+		} elseif( '*parent*' == $childof ) {
+			$childof = $post->post_parent;
+		}
 
-			//$parent = $childof;
-			//if($parent==''){ $parent = $post->ID; }
+		if(is_page()){
 			
-			$parent = $post->ID;
+			$parent = $childof;
+		
+			if( $use_parent_title ){ $title = get_the_title($parent); }
+			$title = apply_filters('widget_title', $title);
+			
 			$children=wp_list_pages( 'echo=0&child_of=' . $parent . '&title_li=' );
 		
 			if ($children) {		
@@ -51,7 +73,7 @@ class shailan_SubpagesWidget extends WP_Widget {
 
 				<div id="shailan-subpages-<?php echo $this->number; ?>">
 					<ul class="subpages">
-						<?php wp_list_pages('sort_column=menu_order&depth='.$depth.'&title_li=&child_of='.$post->ID.'&exclude='.$exclude); ?>
+						<?php wp_list_pages('sort_column=menu_order&depth='.$depth.'&title_li=&child_of='.$parent.'&exclude='.$exclude); ?>
 					</ul>
 				</div> 			
 				
@@ -61,7 +83,6 @@ class shailan_SubpagesWidget extends WP_Widget {
 				echo "\n\t<!-- SUBPAGES : This page doesn't have any subpages. -->";
 			};
 		}
-		
     }
 
     /** @see WP_Widget::update */
@@ -70,13 +91,30 @@ class shailan_SubpagesWidget extends WP_Widget {
     }
 
     /** @see WP_Widget::form */
-    function form($instance) {				
-        $title = esc_attr($instance['title']);
-		$exclude = $instance['exclude'];
-		$depth = $instance['depth'];
+    function form($instance) {
+		$widget_options = wp_parse_args( $instance, $this->widget_defaults );
+		extract( $widget_options, EXTR_SKIP );
+		
+        $title = esc_attr($title);
+		$use_parent_title = (bool) $use_parent_title;
 		
         ?>		
-		<p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title (won\'t be shown):'); ?> <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo $title; ?>" /></label></p>
+		
+		<p><input type="checkbox" class="checkbox" id="<?php echo $this->get_field_id('use_parent_title'); ?>" name="<?php echo $this->get_field_name('use_parent_title'); ?>"<?php checked( $use_parent_title ); ?> /> <label for="<?php echo $this->get_field_id('use_parent_title'); ?>"><?php _e( 'Use page\'s title as title' , 'subpages-extended' ); ?></label>
+		<a href="http://shailan.com/wordpress/plugins/subpages-widget/">(?)</a>
+		</p>
+		
+		<p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title :'); ?> <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo $title; ?>" /></label></p>
+		
+		<p><label for="<?php echo $this->get_field_id('childof'); ?>"><?php _e('Parent :'); ?> <?php 
+			$args = array( 
+				'selected' => $childof,
+				'show_option_no_change' => '*Current page*', 
+				'show_option_none' => '*Parent of current page*',
+				'option_none_value' => '*parent*',
+				'name' => $this->get_field_name('childof'), 
+				'id' => $this->get_field_id('childof') 
+			); shailan_subpages_dropdown_pages($args); ?></label></p>
 			
 		<p><label for="<?php echo $this->get_field_id('exclude'); ?>"><?php _e('Exclude:'); ?> <input class="widefat" id="<?php echo $this->get_field_id('exclude'); ?>" name="<?php echo $this->get_field_name('exclude'); ?>" type="text" value="<?php echo $exclude; ?>" /></label><br /> 
 		<small>Page IDs, separated by commas.</small></p>
@@ -225,24 +263,38 @@ jQuery(document).ready(function($) {
 }
 
 function shailan_subpages_shortcode($atts) {
-	global $post;
+	global $post, $subpages_indexes;
 
 	extract(shortcode_atts(array(
 		'depth' => '3',
 		'exclude' => '',
 		'childof' => '',
-		'exceptme' => false
+		'child_of' => -1,
+		'exceptme' => false,
+		'title' => ''
 	), $atts));
+	
+	// echo "<pre>".print_r($atts, true)."</pre>";
 
-	$parent = $childof;
-	if($parent==''){ $parent = $post->ID; }
+	if('parent' == $childof || 'parent' == $child_of) {  
+		$parent = $post->post_parent;
+	} else {
+		$parent = $childof;
+		if(-1 != $child_of) { $parent = $child_of; }
+		if($parent==''){ $parent = $post->ID; }
+	}
 	
 	if($exceptme) { $exclude .= ','.$post->ID; }
+	
+	if($title == '*current*'){ $title = '<h3>' . get_the_title($parent) . '</h3>'; }
+	
+	$subpages_indexes += 1;
+	$shortcode_id = $subpages_indexes;
 
-	$children=wp_list_pages( 'echo=0&child_of=' . $parent . '&title_li=' );
+	$children = wp_list_pages( 'echo=0&child_of=' . $parent . '&title_li=' );
 	
 	if ($children) {
-		$subpages = '<div id="shailan-subpages-<?php echo $this->number; ?>"><ul class="subpages">';
+		$subpages = '<div id="shailan-subpages-'.$shortcode_id.'">'.$title.'<ul class="subpages">';
 		$subpages .= wp_list_pages('echo=0&sort_column=menu_order&depth='.$depth.'&title_li=&child_of='.$parent.'&exclude='.$exclude);
 		$subpages .= '</ul></div>';
 	} else {
@@ -281,3 +333,41 @@ function shailan_subpages_filter($content){
 		return $content . '\n\t<!-- SUBPAGES : This page doesn\'t have any subpages. -->';
 	}
 } add_filter('the_content', 'shailan_subpages_filter');
+
+function shailan_subpages_dropdown_pages($args = '') {
+	
+	$defaults = array(
+		'depth' => 0, 'child_of' => 0,
+		'selected' => 0, 'echo' => 1,
+		'name' => 'page_id', 'id' => '',
+		'show_option_none' => '', 'show_option_no_change' => '',
+		'option_none_value' => ''
+	);
+
+	$r = wp_parse_args( $args, $defaults );
+	extract( $r, EXTR_SKIP );
+
+	$pages = get_pages($r);
+	$output = '';
+	$name = esc_attr($name);
+	// Back-compat with old system where both id and name were based on $name argument
+	if ( empty($id) )
+		$id = $name;
+
+	if ( ! empty($pages) ) {
+		$output = "<select name=\"$name\" id=\"$id\">\n";
+		if ( $show_option_no_change )
+			$output .= "\t<option value=\"-1\" " . selected( $selected, '-1', false ) . ">$show_option_no_change</option>";
+		if ( $show_option_none )
+			$output .= "\t<option value=\"" . esc_attr($option_none_value) . "\" " . selected( $selected, $option_none_value, false ) . ">$show_option_none</option>\n";
+		$output .= walk_page_dropdown_tree($pages, $depth, $r);
+		$output .= "</select>\n";
+	}
+
+	$output = apply_filters('wp_dropdown_pages', $output);
+
+	if ( $echo )
+		echo $output;
+
+	return $output;
+}
