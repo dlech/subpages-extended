@@ -1,10 +1,10 @@
 === Subpages Extended ===
 Contributors: mattsay
 Donate link: http://shailan.com/donate
-Tags: subpages, widget, shortcode, navigation, menu, auto, index, list
+Tags: page list, pages, list pages, subpages, widget, shortcode, navigation, menu, auto, index, list, children
 Requires at least: 2.5
-Tested up to: 3.0.3
-Stable tag: 1.0.2
+Tested up to: 3.1
+Stable tag: 1.1
 
 A multi widget to list subpages of a page. It also comes with a `[subpages]` shortcode. You can find more widgets, plugins and themes at [shailan.com] (http://shailan.com).
 
@@ -45,6 +45,12 @@ You can ask your questions [here](http://shailan.com/contact)
 1. A snapshot of the widget form.
 
 == Changelog ==
+
+= 1.1 = 
+* Added option to use Current page's title as widget title. (Great thanks to Thoschi for the idea.)
+* Added shortcode option title="*current*" to display current page's title.
+* Added pages dropdown selector to the widget for ease of use.
+* Added shortcode option for childof="parent".
 
 = 1.0.2 = 
 * Added option for automatically displaying subpages on empty pages.

@@ -3,13 +3,10 @@
 Plugin Name: Subpages Extended
 Plugin URI: http://shailan.com/wordpress/plugins/subpages-widget
 Description: A widget to list subpages of a page with an option to show subpages list on <strong>empty pages</strong>. It also comes with a <code>[subpages]</code> shortcode. You can read <a href="http://shailan.com/wordpress/plugins/subpages-widget#usage">how to use subpages</a> . You can find more widgets, plugins and themes at <a href="http://shailan.com">shailan.com</a>.
-Version: 1.0.2
+Version: 1.1
 Author: Matt Say
 Author URI: http://shailan.com
 */
-
-define('SHAILAN_SP_VERSION','1.0.2');
-define('SHAILAN_SP_TITLE', 'Subpages List');
 
 global $subpages_indexes;
 
@@ -100,13 +97,13 @@ class shailan_SubpagesWidget extends WP_Widget {
 		
         ?>		
 		
-		<p><input type="checkbox" class="checkbox" id="<?php echo $this->get_field_id('use_parent_title'); ?>" name="<?php echo $this->get_field_name('use_parent_title'); ?>"<?php checked( $use_parent_title ); ?> /> <label for="<?php echo $this->get_field_id('use_parent_title'); ?>"><?php _e( 'Use page\'s title as title' , 'subpages-extended' ); ?></label>
-		<a href="http://shailan.com/wordpress/plugins/subpages-widget/">(?)</a>
+		<p><input type="checkbox" class="checkbox" id="<?php echo $this->get_field_id('use_parent_title'); ?>" name="<?php echo $this->get_field_name('use_parent_title'); ?>"<?php checked( $use_parent_title ); ?> /> <label for="<?php echo $this->get_field_id('use_parent_title'); ?>"><?php _e( 'Use page title as widget title' , 'subpages-extended' ); ?></label>
+		<a href="http://shailan.com/wordpress/plugins/subpages-widget/help#title">(?)</a>
 		</p>
 		
-		<p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title :'); ?> <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo $title; ?>" /></label></p>
+		<p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title :'); ?> <a href="http://shailan.com/wordpress/plugins/subpages-widget/help#title">(?)</a> <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo $title; ?>" /></label></p>
 		
-		<p><label for="<?php echo $this->get_field_id('childof'); ?>"><?php _e('Parent :'); ?> <?php 
+		<p><label for="<?php echo $this->get_field_id('childof'); ?>"><?php _e('Parent :'); ?> <a href="http://shailan.com/wordpress/plugins/subpages-widget/help#parent">(?)</a> <?php 
 			$args = array( 
 				'selected' => $childof,
 				'show_option_no_change' => '*Current page*', 
@@ -116,15 +113,15 @@ class shailan_SubpagesWidget extends WP_Widget {
 				'id' => $this->get_field_id('childof') 
 			); shailan_subpages_dropdown_pages($args); ?></label></p>
 			
-		<p><label for="<?php echo $this->get_field_id('exclude'); ?>"><?php _e('Exclude:'); ?> <input class="widefat" id="<?php echo $this->get_field_id('exclude'); ?>" name="<?php echo $this->get_field_name('exclude'); ?>" type="text" value="<?php echo $exclude; ?>" /></label><br /> 
+		<p><label for="<?php echo $this->get_field_id('exclude'); ?>"><?php _e('Exclude:'); ?> <a href="http://shailan.com/wordpress/plugins/subpages-widget/help#exclude">(?)</a> <input class="widefat" id="<?php echo $this->get_field_id('exclude'); ?>" name="<?php echo $this->get_field_name('exclude'); ?>" type="text" value="<?php echo $exclude; ?>" /></label><br /> 
 		<small>Page IDs, separated by commas.</small></p>
 		
-		<p><label for="<?php echo $this->get_field_id('depth'); ?>"><?php _e('Depth:'); ?> <input class="widefat" id="<?php echo $this->get_field_id('depth'); ?>" name="<?php echo $this->get_field_name('depth'); ?>" type="text" value="<?php echo $depth; ?>" /></label><br /> 
+		<p><label for="<?php echo $this->get_field_id('depth'); ?>"><?php _e('Depth:'); ?> <a href="http://shailan.com/wordpress/plugins/subpages-widget/help#depth">(?)</a> <input class="widefat" id="<?php echo $this->get_field_id('depth'); ?>" name="<?php echo $this->get_field_name('depth'); ?>" type="text" value="<?php echo $depth; ?>" /></label><br /> 
 		<small>Depth of menu.</small></p>
-			
-<div class="widget-control-actions alignright">
-<p><small><a href="http://shailan.com/wordpress/plugins/subpages-widget">Visit plugin site</a></small></p>
-</div>
+		
+		<div class="widget-control-actions">
+			<p><small>Powered by <a href="http://shailan.com/wordpress/plugins/subpages-widget" title="Wordpress Tips and tricks, Freelancing, Web Design">Shailan.com</a> | <a href="http://shailan.com/wordpress/" title="Get more wordpress widgets and themes">Get more..</a></small></p>
+		</div>
 			
         <?php 
 	}
@@ -294,7 +291,7 @@ function shailan_subpages_shortcode($atts) {
 	$children = wp_list_pages( 'echo=0&child_of=' . $parent . '&title_li=' );
 	
 	if ($children) {
-		$subpages = '<div id="shailan-subpages-'.$shortcode_id.'">'.$title.'<ul class="subpages">';
+		$subpages = '<div id="shailan-subpages-' . $post->ID . '-' .$shortcode_id.'">'.$title.'<ul class="subpages">';
 		$subpages .= wp_list_pages('echo=0&sort_column=menu_order&depth='.$depth.'&title_li=&child_of='.$parent.'&exclude='.$exclude);
 		$subpages .= '</ul></div>';
 	} else {
