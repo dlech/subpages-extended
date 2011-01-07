@@ -1,16 +1,16 @@
 === Subpages Extended ===
 Contributors: mattsay
 Donate link: http://shailan.com/donate
-Tags: page list, pages, list pages, subpages, widget, shortcode, navigation, menu, auto, index, list, children
+Tags: page list, pages, list pages, subpages, widget, shortcode, navigation, menu, auto, index, list, children, wp_list_pages
 Requires at least: 2.5
 Tested up to: 3.1
-Stable tag: 1.1
+Stable tag: 1.2
 
 A multi widget to list subpages of a page. It also comes with a `[subpages]` shortcode. You can find more widgets, plugins and themes at [shailan.com] (http://shailan.com).
 
 == Description ==
 
-This widget displays subpages of a page easily. You can automatically display subpages list on empty pages. Though it's main power is the `[subpages]` shortcode. Using this shortcode on a page you can create subpage indexes. You can view live demo on my wordpress page. It automatically generates subpage indexes. You can also list subpages of another page using the childof attribute of shortcode. See the examples below:
+This widget displays subpages of a page easily. You can automatically display subpages list on empty pages. Though it's main power is the `[subpages]` shortcode. Using this shortcode on a page you can create subpage indexes. You can view live demo on my wordpress page. It automatically generates subpage indexes. You can also list subpages of another page using the childof attribute of shortcode. It supports all wp_list_pages functionality via shortcode. See the examples below:
 
 Here are subpages of my wordpress page with a depth level of 1:
 `[subpages depth="1" childof="286"]`
@@ -45,6 +45,11 @@ You can ask your questions [here](http://shailan.com/contact)
 1. A snapshot of the widget form.
 
 == Changelog ==
+
+= 1.2 =
+* Added sort options to the widget (Great thanks to Arkantos for the idea.)
+* Added all wp_list_pages options to the shortcode. Now shortcode is more powerful than before. 
+* Be sure to check shailan.com for great demo and examples.
 
 = 1.1 = 
 * Added option to use Current page's title as widget title. (Great thanks to Thoschi for the idea.)
