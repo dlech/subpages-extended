@@ -60,6 +60,7 @@ class shailan_SubpagesWidget extends WP_Widget {
 			$childof = $post->ID;
 		} elseif( '*parent*' == $childof ) {
 			$childof = $post->post_parent;
+			if($childof == 0){ $childof = $post->ID; } /* Top pages display sub pages only */
 		}
 
 		if(is_page()){
@@ -322,6 +323,7 @@ function shailan_subpages_shortcode($atts) {
 	
 	if('parent' == $childof || 'parent' == $child_of) {  
 		$parent = $post->post_parent;
+		//if($parent == 0){ $parent = $post->ID; } /* Top pages display sub pages only */
 	} else {
 		$parent = $childof;
 		if(-1 != $child_of) { $parent = $child_of; }
