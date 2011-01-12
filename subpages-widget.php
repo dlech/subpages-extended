@@ -421,6 +421,7 @@ function shailan_subpages_dropdown_pages($args = '') {
 			$output .= "\t<option value=\"-1\" " . selected( $selected, '-1', false ) . ">$show_option_no_change</option>";
 		if ( $show_option_none )
 			$output .= "\t<option value=\"" . esc_attr($option_none_value) . "\" " . selected( $selected, $option_none_value, false ) . ">$show_option_none</option>\n";
+		$output .= "\t<option value=\"*full-branch*\" " . selected( $selected, "*full-branch*", false ) . ">*Full branch*</option>\n";		
 		$output .= walk_page_dropdown_tree($pages, $depth, $r);
 		$output .= "</select>\n";
 	}
