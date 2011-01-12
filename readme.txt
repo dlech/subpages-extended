@@ -4,7 +4,7 @@ Donate link: http://shailan.com/donate
 Tags: page list, pages, list pages, subpages, widget, shortcode, navigation, menu, auto, index, list, children, wp_list_pages
 Requires at least: 2.5
 Tested up to: 3.1
-Stable tag: 1.2
+Stable tag: 1.2.1
 
 A multi widget to list subpages of a page. It also comes with a `[subpages]` shortcode. You can find more widgets, plugins and themes at [shailan.com] (http://shailan.com).
 
@@ -45,6 +45,9 @@ You can ask your questions [here](http://shailan.com/contact)
 1. A snapshot of the widget form.
 
 == Changelog ==
+
+= 1.2.1 =
+* Fixed top pages show all pages when `*Parent of current page*` selected in the widget. Thanks to Wouter Bruijning for pointing out this error.
 
 = 1.2 =
 * Added sort options to the widget (Great thanks to Arkantos for the idea.)
