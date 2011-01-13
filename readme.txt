@@ -49,7 +49,7 @@ You can ask your questions [here](http://shailan.com/contact)
 = 1.3 =
 * Added use link on title option.
 * Added `*Full Branch*` option to Parent which allows listing subpages until topmost page.
-* Added `Use Menu Labels` option and added Menu Label meta box for using shorter menu labels for pages that have a long name. This box is seen on right side on the edit page screen.
+* Added `Use Menu Labels` option and added Menu Label meta box to allow using shorter menu labels for pages that have a long name. This box is seen on right side on the edit page screen.
 
 = 1.2.1 =
 * Fixed top pages show all pages when `*Parent of current page*` selected in the widget. Thanks to Wouter Bruijning for pointing out this error.
