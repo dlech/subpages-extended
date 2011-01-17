@@ -3,7 +3,7 @@
 Plugin Name: Subpages Extended
 Plugin URI: http://shailan.com/wordpress/plugins/subpages-widget
 Description: A widget to list subpages of a page with an option to show subpages list on <strong>empty pages</strong>. It also comes with a <code>[subpages]</code> shortcode. You can read <a href="http://shailan.com/wordpress/plugins/subpages-widget#usage">how to use subpages</a> . You can find more widgets, plugins and themes at <a href="http://shailan.com">shailan.com</a>.
-Version: 1.3
+Version: 1.3.1
 Author: Matt Say
 Author URI: http://shailan.com
 */
@@ -224,7 +224,7 @@ class shailan_SubpagesWidget extends WP_Widget {
 		</p>
 		
 		<div class="widget-control-actions">
-			<p><small>Powered by <a href="http://shailan.com/wordpress/plugins/subpages-widget" title="Wordpress Tips and tricks, Freelancing, Web Design">Shailan.com</a> | <a href="http://shailan.com/wordpress/" title="Get more wordpress widgets and themes">Get more..</a></small></p>
+			<p><small>Powered by <a href="http://shailan.com/wordpress/plugins/subpages-widget" title="Wordpress Tips and tricks, Freelancing, Web Design (opens in new window)" target="_blank">Shailan.com</a> | <a href="http://shailan.com/wordpress/" title="Get more wordpress widgets and themes (opens in new window)" target="_blank">Get more..</a></small></p>
 		</div>
 		</div>
         <?php 
@@ -244,6 +244,7 @@ function subpages_widget_adminMenu(){
 	if(is_admin()){ 
 		wp_enqueue_script( 'jquery' );
 		wp_enqueue_script( 'tweetable', WP_PLUGIN_URL . '/subpages-extended/js/jquery.tweetable.js', 'jquery' );
+		wp_enqueue_script( 'subpages-admin', WP_PLUGIN_URL . '/subpages-extended/js/admin.js', 'jquery' );
 		wp_enqueue_style( 'subpages-extended', WP_PLUGIN_URL . '/subpages-extended/css/subpages.css' );
 		wp_enqueue_style( 'tweetable', WP_PLUGIN_URL . '/subpages-extended/css/tweetable.css' );
 	};
@@ -355,7 +356,7 @@ jQuery(document).ready(function($) {
 </script> 
 
 <p>
-<small><a href="http://shailan.com/wordpress/plugins/subpages-widget">Subpages Extended</a> by <a href="http://shailan.com">shailan</a>.</small>
+<small><a href="http://shailan.com/wordpress/plugins/subpages-widget" rel="external" target="_blank">Subpages Extended</a> by <a href="http://shailan.com">shailan</a>.</small>
 </p>
 
 </div>
@@ -463,7 +464,7 @@ function shailan_subpages_filter($content){
 		$subpages = ob_get_clean();
 		return $subpages;
 	} else {
-		return $content . '\n\t<!-- SUBPAGES : This page doesn\'t have any subpages. -->';
+		return $content . "\n\t<!-- SUBPAGES : This page doesn't have any subpages. -->";
 	}
 } add_filter('the_content', 'shailan_subpages_filter');
 
