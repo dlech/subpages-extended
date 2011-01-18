@@ -3,7 +3,7 @@
 Plugin Name: Subpages Extended
 Plugin URI: http://shailan.com/wordpress/plugins/subpages-widget
 Description: A widget to list subpages of a page with an option to show subpages list on <strong>empty pages</strong>. It also comes with a <code>[subpages]</code> shortcode. You can read <a href="http://shailan.com/wordpress/plugins/subpages-widget#usage">how to use subpages</a> . You can find more widgets, plugins and themes at <a href="http://shailan.com">shailan.com</a>.
-Version: 1.3.1
+Version: 1.3.2
 Author: Matt Say
 Author URI: http://shailan.com
 */
@@ -381,7 +381,7 @@ function shailan_subpages_shortcode($atts) {
 		'sort_order'   => 'ASC',
 		'link_before'  => '',
 		'link_after'   => '',
-		'walker' =>  $walker,
+		/* 'walker' =>  '', Can not be used in shortcode really, Use use_menu_labels option to switch current walker */
 		'exceptme' => false,
 		'childof' => '',
 		'title' => '',
