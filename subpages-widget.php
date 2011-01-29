@@ -76,6 +76,8 @@ class shailan_SubpagesWidget extends WP_Widget {
 		
 		// echo "<pre>".print_r($instance, true)."</pre>";
 		
+		$is_visible = false;
+		
 		if( '-1' == $childof ) {  
 			$childof = $post->ID;
 		} elseif( '*parent*' == $childof ) {
@@ -93,9 +95,11 @@ class shailan_SubpagesWidget extends WP_Widget {
 				
 				$childof = $p->ID;
 			}
+		} else {
+			$is_visible = true;
 		}
 
-		if(is_page()){
+		if(is_page() || $is_visible){
 			
 			$parent = $childof;
 			
