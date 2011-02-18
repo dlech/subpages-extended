@@ -3,7 +3,7 @@
 Plugin Name: Subpages Extended
 Plugin URI: http://shailan.com/wordpress/plugins/subpages-widget
 Description: A widget to list subpages of a page with an option to show subpages list on <strong>empty pages</strong>. It also comes with a <code>[subpages]</code> shortcode. You can read <a href="http://shailan.com/wordpress/plugins/subpages-widget#usage">how to use subpages</a> . You can find more widgets, plugins and themes at <a href="http://shailan.com">shailan.com</a>.
-Version: 1.3.3
+Version: 1.3.4
 Author: Matt Say
 Author URI: http://shailan.com
 */
@@ -12,6 +12,7 @@ global $subpages_indexes;
 
 include_once('class-shailan-walker-page.php');
 include_once('subpages-menu-label-metabox.php');
+
 function shailan_page_title_filter( $title, $id  ){
 
 	$subpages_menu_label = htmlspecialchars( stripcslashes ( get_post_meta ( $id, '_subpages_menu_label', true ) ) );	
@@ -24,6 +25,7 @@ function shailan_page_title_filter( $title, $id  ){
 	} else {
 		return $title;
 	}
+	
 } add_filter( 'walker_page_title', 'shailan_page_title_filter', 10, 2 );
 
 /**
@@ -57,8 +59,9 @@ class shailan_SubpagesWidget extends WP_Widget {
 			'exceptme' => false,
 			'childof' => '',
 			'sort_by' => 'menu_order, post_title',
-			'use_menu_labels' => false,
-			'link_on_title' => false
+			/* 'use_menu_labels' => false, */
+			'link_on_title' => false,
+			'rel' => ''
 		);
     }
 	
@@ -71,7 +74,7 @@ class shailan_SubpagesWidget extends WP_Widget {
 		extract( $widget_options, EXTR_SKIP );
 		
 		$use_parent_title = (bool) $use_parent_title;
-		$use_menu_labels = (bool) $use_menu_labels;
+		/* $use_menu_labels = (bool) $use_menu_labels; */
 		$link_on_title = (bool) $link_on_title;
 		
 		// echo "<pre>".print_r($instance, true)."</pre>";
@@ -99,17 +102,14 @@ class shailan_SubpagesWidget extends WP_Widget {
 			$is_visible = true;
 		}
 
-		if(is_page() || $is_visible){
+		if( is_page() || $is_visible ){
 			
 			$parent = $childof;
 			
-			if($use_menu_labels){ 
-				$walker = new Shailan_Walker_Page;
-				$title_filter = 'walker_page_title';
-			} else {
-				$walker = new Walker_Page;
-				$title_filter = 'the_title';
-			}
+			// Setup page walker
+			$walker = new Shailan_Walker_Page;
+			$title_filter = 'walker_page_title';
+			$walker->set_rel($rel);
 		
 			// Use parent title
 			if( $use_parent_title ){ $title = get_the_title($parent); }
@@ -124,12 +124,6 @@ class shailan_SubpagesWidget extends WP_Widget {
 			if( !$use_parent_title ){ $title = apply_filters('widget_title', $title); }
 			
 			$children=wp_list_pages( 'echo=0&child_of=' . $parent . '&title_li=' );
-			
-			if($use_menu_labels){ 
-				$walker = new Shailan_Walker_Page;
-			} else {
-				$walker = new Walker_Page;
-			}
 			
 			$subpage_args = array(
 				'depth'        => $depth,
@@ -181,7 +175,7 @@ class shailan_SubpagesWidget extends WP_Widget {
         $title = esc_attr($title);
 		$use_parent_title = (bool) $use_parent_title;
 		$link_on_title = (bool) $link_on_title;
-		$use_menu_labels = (bool) $use_menu_labels;
+		/*$use_menu_labels = (bool) $use_menu_labels;*/
 		
 		//echo "<pre>".print_r($instance, true)."</pre>";
 		
@@ -197,7 +191,7 @@ class shailan_SubpagesWidget extends WP_Widget {
 		
 		<p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title :'); ?> <a href="http://shailan.com/wordpress/plugins/subpages-widget/help#title">(?)</a> <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo $title; ?>" /></label></p>
 		
-		<p><label for="<?php echo $this->get_field_id('childof'); ?>"><?php _e('Parent :'); ?> <a href="http://shailan.com/wordpress/plugins/subpages-widget/help#parent">(?)</a> <?php 
+		<p><label for="<?php echo $this->get_field_id('childof'); ?>"><?php _e('Parent (Subpages of):'); ?> <a href="http://shailan.com/wordpress/plugins/subpages-widget/help#parent">(?)</a> <?php 
 			$args = array( 
 				'selected' => $childof,
 				'show_option_no_change' => '*Current page*', 
@@ -206,6 +200,9 @@ class shailan_SubpagesWidget extends WP_Widget {
 				'name' => $this->get_field_name('childof'), 
 				'id' => $this->get_field_id('childof') 
 			); shailan_subpages_dropdown_pages($args); ?></label></p>
+			
+		<p><label for="<?php echo $this->get_field_id('rel'); ?>"><?php _e('Rel :'); ?> <a href="http://shailan.com/wordpress/plugins/subpages-widget/help#rel">(?)</a> <input class="widefat" id="<?php echo $this->get_field_id('rel'); ?>" name="<?php echo $this->get_field_name('rel'); ?>" type="text" value="<?php echo $rel; ?>" /></label></p>
+		
 			
 		<p><label for="<?php echo $this->get_field_id('exclude'); ?>"><?php _e('Exclude:'); ?> <a href="http://shailan.com/wordpress/plugins/subpages-widget/help#exclude">(?)</a> <input class="widefat" id="<?php echo $this->get_field_id('exclude'); ?>" name="<?php echo $this->get_field_name('exclude'); ?>" type="text" value="<?php echo $exclude; ?>" /></label><br /> 
 		<small>Page IDs, separated by commas.</small></p>
@@ -223,9 +220,9 @@ class shailan_SubpagesWidget extends WP_Widget {
 		<p><label for="<?php echo $this->get_field_id('depth'); ?>"><?php _e('Depth:'); ?> <a href="http://shailan.com/wordpress/plugins/subpages-widget/help#depth">(?)</a> <input class="widefat" id="<?php echo $this->get_field_id('depth'); ?>" name="<?php echo $this->get_field_name('depth'); ?>" type="text" value="<?php echo $depth; ?>" /></label><br /> 
 		<small>Depth of menu.</small></p>
 		
-		<p><input type="checkbox" class="checkbox" id="<?php echo $this->get_field_id('use_menu_labels'); ?>" name="<?php echo $this->get_field_name('use_menu_labels'); ?>"<?php checked( $use_menu_labels ); ?> /> <label for="<?php echo $this->get_field_id('use_menu_labels'); ?>"><?php _e( 'Use menu labels for page title.' , 'subpages-extended' ); ?></label>
+		<!-- <p><input type="checkbox" class="checkbox" id="<?php //echo $this->get_field_id('use_menu_labels'); ?>" name="<?php //echo $this->get_field_name('use_menu_labels'); ?>"<?php //checked( $use_menu_labels ); ?> /> <label for="<?php //echo $this->get_field_id('use_menu_labels'); ?>"><?php //_e( 'Use menu labels for page title.' , 'subpages-extended' ); ?></label>
 		<a href="http://shailan.com/wordpress/plugins/subpages-widget/help#using-menu-labels">(?)</a>
-		</p>
+		</p> -->
 		
 		<div class="widget-control-actions">
 			<p><small>Powered by <a href="http://shailan.com/wordpress/plugins/subpages-widget" title="Wordpress Tips and tricks, Freelancing, Web Design (opens in new window)" target="_blank">Shailan.com</a> | <a href="http://shailan.com/wordpress/" title="Get more wordpress widgets and themes (opens in new window)" target="_blank">Get more..</a></small></p>
@@ -389,14 +386,13 @@ function shailan_subpages_shortcode($atts) {
 		'exceptme' => false,
 		'childof' => '',
 		'title' => '',
-		'use_menu_labels' => false
+		/*'use_menu_labels' => true, */
+		'rel' => ''
 		), $atts));
 		
-	if( $use_menu_labels ){ 
+
 		$walker = new Shailan_Walker_Page;
-	} else {
-		$walker = new Walker_Page;
-	}
+		$walker->set_rel( $rel );
 	
 	if('parent' == $childof || 'parent' == $child_of) {  
 		$parent = $post->post_parent;

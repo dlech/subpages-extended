@@ -4,7 +4,7 @@ Donate link: http://shailan.com/donate
 Tags: page list, pages, list pages, subpages, widget, shortcode, navigation, menu, auto, index, list, children, wp_list_pages
 Requires at least: 2.5
 Tested up to: 3.1
-Stable tag: 1.3.3
+Stable tag: 1.3.4
 
 A multi widget to list subpages of a page. It also comes with a `[subpages]` shortcode. You can find more widgets, plugins and themes at [shailan.com] (http://shailan.com).
 
@@ -45,6 +45,10 @@ You can ask your questions [here](http://shailan.com/contact)
 1. A snapshot of the widget form.
 
 == Changelog ==
+
+= 1.3.4 = 
+* Added: Rel option for shortcode & widget.
+* Removed: Use menu labels options from widget & shortcode. Plugin uses menu label if it exists.
 
 = 1.3.3 = 
 * Fixed: Subpages widget is not visible on home page if a certain page is selected.
