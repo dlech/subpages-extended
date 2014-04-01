@@ -1,6 +1,5 @@
 === Subpages Extended ===
 Contributors: mattsay
-Donate link: http://shailan.com/donate
 Tags: page list, pages, list pages, subpages, widget, shortcode, navigation, menu, auto, index, list, children, wp_list_pages
 Requires at least: 2.5
 Tested up to: 3.1
@@ -20,7 +19,7 @@ Outputs:
 * Plugins
 * Themes
 
-If the page doesn’t have any subpages it will display the following error for you to fix it:
+If the page doesn't have any subpages it will display the following error for you to fix it:
 `[subpages depth="1" childof="257"]`
 
 Outputs: 
