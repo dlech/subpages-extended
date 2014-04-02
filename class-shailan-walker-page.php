@@ -11,17 +11,17 @@ class Shailan_Walker_Page extends Walker {
 		$_rel = $rel;
 	}
 	
-	function start_lvl(&$output, $depth) {
+	function start_lvl( &$output, $depth = 0, $args = array() ) {
 		$indent = str_repeat("\t", $depth);
 		$output .= "\n$indent<ul class='children'>\n";
 	}
 
-	function end_lvl(&$output, $depth) {
+	function end_lvl( &$output, $depth = 0, $args = array() ) {
 		$indent = str_repeat("\t", $depth);
 		$output .= "$indent</ul>\n";
 	}
 
-	function start_el(&$output, $page, $depth, $args, $current_page) {
+	function start_el( &$output, $page, $depth = 0, $args = array(), $current_page = 0 ) {
 		global $_rel;
 	
 		if ( $depth )
@@ -58,7 +58,7 @@ class Shailan_Walker_Page extends Walker {
 		}
 	}
 
-	function end_el(&$output, $page, $depth) {
+	function end_el( &$output, $page, $depth = 0, $args = array() ) {
 		$output .= "</li>\n";
 	}
 
