@@ -138,7 +138,7 @@ class shailan_SubpagesWidget extends WP_Widget {
 				'sort_column'  => $sort_by,
 				'link_before'  => '',
 				'link_after'   => '',
-				'walker' => $walker );
+				'walker' => '' );
 		
 			if ($children) {		
 			?>
